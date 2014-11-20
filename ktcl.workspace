@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Workspace Name="ktcl" Database="">
+  <Project Name="ktcl" Path="ktcl.project" Active="Yes"/>
+  <BuildMatrix>
+    <WorkspaceConfiguration Name="Debug" Selected="no">
+      <Project Name="ktcl" ConfigName="Debug"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Release" Selected="yes">
+      <Project Name="ktcl" ConfigName="Release"/>
+    </WorkspaceConfiguration>
+  </BuildMatrix>
+  <Environment>
+    <![CDATA[TCL_ROOT=/opt/ActiveTcl-8.6
+LINKER_OPT=-static-libgcc -static
+TCL_LIB=tcl8.6]]>
+  </Environment>
+</CodeLite_Workspace>

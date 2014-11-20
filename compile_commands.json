@@ -1,0 +1,5 @@
+[{
+  "file": "/home/seb/dev/tcl/ktcl/main.cpp",
+  "directory": "/home/seb/dev/tcl/ktcl",
+  "command": "/usr/bin/g++  -c /home/seb/dev/tcl/ktcl/main.cpp -o /home/seb/dev/tcl/ktcl/main.cpp.o  -g  -O0  -Wall -DHAVE_UNISTD_H -I. -I. -I$(TCL_ROOT)/include"
+ }]

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Workspace Name="ktcl_windows" Database="/Users/sebastien/Documents/dev/tcl/ktcl/ktcl_windows/.codelite/ktcl_windows.tags">
+  <Project Name="ktcl" Path="../ktcl.project" Active="Yes"/>
+  <Environment>
+    <![CDATA[TCL_ROOT=c:/tcl32
+TCL_LIB=tcl86
+LINKER_OPT=-static]]>
+  </Environment>
+  <BuildMatrix>
+    <WorkspaceConfiguration Name="Debug" Selected="yes">
+      <Project Name="ktcl" ConfigName="Debug"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Release" Selected="yes">
+      <Project Name="ktcl" ConfigName="Release"/>
+    </WorkspaceConfiguration>
+  </BuildMatrix>
+</CodeLite_Workspace>
