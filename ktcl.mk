@@ -2,21 +2,21 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Release
+## Debug
 ProjectName            :=ktcl
-ConfigurationName      :=Release
-WorkspacePath          := "/home/seb/dev/tcl/ktcl"
-ProjectPath            := "/home/seb/dev/tcl/ktcl"
-IntermediateDirectory  :=./Release
+ConfigurationName      :=Debug
+WorkspacePath          := "C:\Users\sebastien\Documents\dev\ktcl\ktcl_windows"
+ProjectPath            := "C:\Users\sebastien\Documents\dev\ktcl"
+IntermediateDirectory  :=./Debug
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
-User                   :=sebastien riou
-Date                   :=11/20/14
-CodeLitePath           :="/home/seb/.codelite"
-LinkerName             :=/usr/bin/g++ 
-SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
+User                   :=sebastien
+Date                   :=11/23/14
+CodeLitePath           :="C:\Program Files (x86)\CodeLite"
+LinkerName             :=C:/MinGW-4.8.1/bin/g++.exe 
+SharedObjectLinkerName :=C:/MinGW-4.8.1/bin/g++.exe -shared -fPIC
 ObjectSuffix           :=.o
 DependSuffix           :=.o.d
 PreprocessSuffix       :=.i
@@ -28,42 +28,45 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/$(ProjectName)
-Preprocessors          :=$(PreprocessorSwitch)NDEBUG $(PreprocessorSwitch)HAVE_UNISTD_H 
+Preprocessors          :=$(PreprocessorSwitch)HAVE_UNISTD_H 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="ktcl.txt"
 PCHCompileFlags        :=
-MakeDirCommand         :=mkdir -p
+MakeDirCommand         :=makedir
+RcCmpOptions           := 
+RcCompilerName         :=C:/MinGW-4.8.1/bin/windres.exe 
 LinkOptions            :=  $(LINKER_OPT)
 IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)$(TCL_ROOT)/include 
 IncludePCH             := 
 RcIncludePath          := 
-Libs                   := $(LibrarySwitch)$(TCL_LIB) $(LibrarySwitch)pthread $(LibrarySwitch)m $(LibrarySwitch)dl $(LibrarySwitch)z $(LibrarySwitch)ieee 
-ArLibs                 :=  "$(TCL_LIB)" "pthread" "m" "dl" "z" "ieee" 
+Libs                   := $(LibrarySwitch)$(TCL_LIB) 
+ArLibs                 :=  "$(TCL_LIB)" 
 LibPath                := $(LibraryPathSwitch). $(LibraryPathSwitch)$(TCL_ROOT)/lib 
 
 ##
 ## Common variables
 ## AR, CXX, CC, AS, CXXFLAGS and CFLAGS can be overriden using an environment variables
 ##
-AR       := /usr/bin/ar rcu
-CXX      := /usr/bin/g++ 
-CC       := /usr/bin/gcc 
+AR       := C:/MinGW-4.8.1/bin/ar.exe rcu
+CXX      := C:/MinGW-4.8.1/bin/g++.exe 
+CC       := C:/MinGW-4.8.1/bin/gcc.exe 
 CXXFLAGS :=  -g -O0 -Wall $(Preprocessors)
 CFLAGS   :=  -g -O0 -Wall $(Preprocessors)
 ASFLAGS  := 
-AS       := /usr/bin/as 
+AS       := C:/MinGW-4.8.1/bin/as.exe 
 
 
 ##
 ## User defined environment variables
 ##
-CodeLiteDir:=/usr/share/codelite
-TCL_ROOT:=/opt/ActiveTcl-8.6
-LINKER_OPT:=-static-libgcc -static
-TCL_LIB:=tcl8.6
-Objects0=$(IntermediateDirectory)/main.cpp$(ObjectSuffix) 
+CodeLiteDir:=C:\Program Files (x86)\CodeLite
+UNIT_TEST_PP_SRC_DIR:=C:\UnitTest++-1.3
+TCL_ROOT:=c:/tcl32
+TCL_LIB:=tcl86
+LINKER_OPT:=-static
+Objects0=$(IntermediateDirectory)/main.cpp$(ObjectSuffix) $(IntermediateDirectory)/dat_analysis_raw_to_text.cpp$(ObjectSuffix) 
 
 
 
@@ -82,7 +85,7 @@ $(OutputFile): $(IntermediateDirectory)/.d $(Objects)
 	$(LinkerName) $(OutputSwitch)$(OutputFile) @$(ObjectsFileList) $(LibPath) $(Libs) $(LinkOptions)
 
 $(IntermediateDirectory)/.d:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+	@$(MakeDirCommand) "./Debug"
 
 PreBuild:
 
@@ -91,12 +94,20 @@ PreBuild:
 ## Objects
 ##
 $(IntermediateDirectory)/main.cpp$(ObjectSuffix): main.cpp $(IntermediateDirectory)/main.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/seb/dev/tcl/ktcl/main.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/main.cpp$(ObjectSuffix) $(IncludePath)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/sebastien/Documents/dev/ktcl/main.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/main.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/main.cpp$(DependSuffix): main.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/main.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/main.cpp$(DependSuffix) -MM "main.cpp"
 
 $(IntermediateDirectory)/main.cpp$(PreprocessSuffix): main.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/main.cpp$(PreprocessSuffix) "main.cpp"
+
+$(IntermediateDirectory)/dat_analysis_raw_to_text.cpp$(ObjectSuffix): dat_analysis/raw_to_text.cpp $(IntermediateDirectory)/dat_analysis_raw_to_text.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/sebastien/Documents/dev/ktcl/dat_analysis/raw_to_text.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/dat_analysis_raw_to_text.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/dat_analysis_raw_to_text.cpp$(DependSuffix): dat_analysis/raw_to_text.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/dat_analysis_raw_to_text.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/dat_analysis_raw_to_text.cpp$(DependSuffix) -MM "dat_analysis/raw_to_text.cpp"
+
+$(IntermediateDirectory)/dat_analysis_raw_to_text.cpp$(PreprocessSuffix): dat_analysis/raw_to_text.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/dat_analysis_raw_to_text.cpp$(PreprocessSuffix) "dat_analysis/raw_to_text.cpp"
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)
@@ -104,9 +115,10 @@ $(IntermediateDirectory)/main.cpp$(PreprocessSuffix): main.cpp
 ## Clean
 ##
 clean:
-	$(RM) ./Release/*$(ObjectSuffix)
-	$(RM) ./Release/*$(DependSuffix)
+	$(RM) ./Debug/*$(ObjectSuffix)
+	$(RM) ./Debug/*$(DependSuffix)
 	$(RM) $(OutputFile)
-	$(RM) ".build-release/ktcl"
+	$(RM) $(OutputFile).exe
+	$(RM) "ktcl_windows/.build-debug/ktcl"
 
 

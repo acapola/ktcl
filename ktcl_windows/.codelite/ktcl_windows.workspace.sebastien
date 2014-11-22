@@ -4,6 +4,6 @@
   <Environment Name="&lt;Use Defaults&gt;"/>
   <WorkspaceParserFlags flags="0"/>
   <SubversionPath>
-    <![CDATA[C:\Users\sebastien\Documents\dev\tcl\ktcl\ktcl_windows]]>
+    <![CDATA[C:\Users\sebastien\Documents\dev\ktcl\ktcl_windows]]>
   </SubversionPath>
 </Workspace>

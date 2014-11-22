@@ -19,11 +19,16 @@ void prompt(bool newCmd){
 	}
 }
 
+int raw_to_text_init(Tcl_Interp *interp);
+
 int main(int argc, char *argv[]) {
 	int code;
 	printf("ktcl\n");
 	Tcl_FindExecutable(argv[0]);
     interp = Tcl_CreateInterp();
+	
+	raw_to_text_init(interp);
+	
 	Tcl_Channel chanIn = Tcl_GetStdChannel(TCL_STDIN);
 	Tcl_DString cmd;
 	Tcl_DStringInit(&cmd);
@@ -38,7 +43,13 @@ int main(int argc, char *argv[]) {
 		newCmd = Tcl_CommandComplete(cmdStr);
 		if(newCmd){
 			code = Tcl_Eval(interp, cmdStr);
-			if (code != TCL_OK) {
+			if (code == TCL_OK) {
+				Tcl_Channel chan = Tcl_GetStdChannel(TCL_STDOUT);
+				if (chan) {
+					Tcl_WriteObj(chan, Tcl_GetObjResult(interp));
+					Tcl_WriteChars(chan, "\n", 1);
+				}
+			} else {
 				Tcl_Channel chan = Tcl_GetStdChannel(TCL_STDERR);
 				if (chan) {
 					Tcl_WriteObj(chan, Tcl_GetObjResult(interp));

@@ -48,6 +48,7 @@
   <Dependencies/>
   <VirtualDirectory Name="src">
     <File Name="main.cpp"/>
+    <File Name="dat_analysis/raw_to_text.cpp"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>
