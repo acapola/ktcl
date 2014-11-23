@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Session Name="C:\Users\sebastien\Documents\dev\tcl\ktcl\ktcl_windows\ktcl_windows.workspace">
+<Session Name="C:\Users\sebastien\Documents\dev\ktcl\ktcl_windows\ktcl_windows.workspace">
   <int Value="0" Name="m_selectedTab"/>
-  <wxString Value="C:\Users\sebastien\Documents\dev\tcl\ktcl\ktcl_windows\ktcl_windows.workspace" Name="m_workspaceName"/>
+  <wxString Value="C:\Users\sebastien\Documents\dev\ktcl\ktcl_windows\ktcl_windows.workspace" Name="m_workspaceName"/>
   <TabInfoArray Name="TabInfoArray"/>
   <SerializedObject Name="m_breakpoints">
     <long Value="0" Name="Count"/>
