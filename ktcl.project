@@ -49,6 +49,16 @@
   <VirtualDirectory Name="src">
     <File Name="main.cpp"/>
     <File Name="dat_analysis/raw_to_text.cpp"/>
+    <File Name="tclchannelstreambuf.h"/>
+    <File Name="tclchannelstreambuf.cpp"/>
+    <File Name="common/archive.cpp"/>
+    <File Name="common/archive.h"/>
+    <File Name="common/error_msg.cpp"/>
+    <File Name="common/error_msg.h"/>
+    <File Name="common/numconv_stringstream.cpp"/>
+    <File Name="common/numconv_stringstream.h"/>
+    <File Name="common/string_ext.cpp"/>
+    <File Name="common/string_ext.h"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>
@@ -61,9 +71,10 @@
       <ResourceCompiler Options=""/>
     </GlobalSettings>
     <Configuration Name="Debug" CompilerType="default_gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g;-O0;-Wall" C_Options="-g;-O0;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+      <Compiler Options="-Wmain;-Wfatal-errors;-g;-O0;-std=c++11;-Wall" C_Options="-g;-O0;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
         <IncludePath Value="$(TCL_ROOT)/include"/>
+        <IncludePath Value="common"/>
         <Preprocessor Value="HAVE_UNISTD_H"/>
       </Compiler>
       <Linker Options="$(LINKER_OPT)" Required="yes">

@@ -1,0 +1,1 @@
+source ../test/raw_to_text_test.tcl

@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=sebastien
-Date                   :=11/23/14
+Date                   :=11/29/14
 CodeLitePath           :="C:\Program Files (x86)\CodeLite"
 LinkerName             :=C:/MinGW-4.8.1/bin/g++.exe 
 SharedObjectLinkerName :=C:/MinGW-4.8.1/bin/g++.exe -shared -fPIC
@@ -38,7 +38,7 @@ MakeDirCommand         :=makedir
 RcCmpOptions           := 
 RcCompilerName         :=C:/MinGW-4.8.1/bin/windres.exe 
 LinkOptions            :=  $(LINKER_OPT)
-IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)$(TCL_ROOT)/include 
+IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)$(TCL_ROOT)/include $(IncludeSwitch)common 
 IncludePCH             := 
 RcIncludePath          := 
 Libs                   := $(LibrarySwitch)$(TCL_LIB) 
@@ -52,7 +52,7 @@ LibPath                := $(LibraryPathSwitch). $(LibraryPathSwitch)$(TCL_ROOT)/
 AR       := C:/MinGW-4.8.1/bin/ar.exe rcu
 CXX      := C:/MinGW-4.8.1/bin/g++.exe 
 CC       := C:/MinGW-4.8.1/bin/gcc.exe 
-CXXFLAGS :=  -g -O0 -Wall $(Preprocessors)
+CXXFLAGS :=  -Wmain -Wfatal-errors -g -O0 -std=c++11 -Wall $(Preprocessors)
 CFLAGS   :=  -g -O0 -Wall $(Preprocessors)
 ASFLAGS  := 
 AS       := C:/MinGW-4.8.1/bin/as.exe 
@@ -66,7 +66,7 @@ UNIT_TEST_PP_SRC_DIR:=C:\UnitTest++-1.3
 TCL_ROOT:=c:/tcl32
 TCL_LIB:=tcl86
 LINKER_OPT:=-static
-Objects0=$(IntermediateDirectory)/main.cpp$(ObjectSuffix) $(IntermediateDirectory)/dat_analysis_raw_to_text.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/main.cpp$(ObjectSuffix) $(IntermediateDirectory)/dat_analysis_raw_to_text.cpp$(ObjectSuffix) $(IntermediateDirectory)/tclchannelstreambuf.cpp$(ObjectSuffix) $(IntermediateDirectory)/common_archive.cpp$(ObjectSuffix) $(IntermediateDirectory)/common_error_msg.cpp$(ObjectSuffix) $(IntermediateDirectory)/common_numconv_stringstream.cpp$(ObjectSuffix) $(IntermediateDirectory)/common_string_ext.cpp$(ObjectSuffix) 
 
 
 
@@ -108,6 +108,46 @@ $(IntermediateDirectory)/dat_analysis_raw_to_text.cpp$(DependSuffix): dat_analys
 
 $(IntermediateDirectory)/dat_analysis_raw_to_text.cpp$(PreprocessSuffix): dat_analysis/raw_to_text.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/dat_analysis_raw_to_text.cpp$(PreprocessSuffix) "dat_analysis/raw_to_text.cpp"
+
+$(IntermediateDirectory)/tclchannelstreambuf.cpp$(ObjectSuffix): tclchannelstreambuf.cpp $(IntermediateDirectory)/tclchannelstreambuf.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/sebastien/Documents/dev/ktcl/tclchannelstreambuf.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/tclchannelstreambuf.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/tclchannelstreambuf.cpp$(DependSuffix): tclchannelstreambuf.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/tclchannelstreambuf.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/tclchannelstreambuf.cpp$(DependSuffix) -MM "tclchannelstreambuf.cpp"
+
+$(IntermediateDirectory)/tclchannelstreambuf.cpp$(PreprocessSuffix): tclchannelstreambuf.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/tclchannelstreambuf.cpp$(PreprocessSuffix) "tclchannelstreambuf.cpp"
+
+$(IntermediateDirectory)/common_archive.cpp$(ObjectSuffix): common/archive.cpp $(IntermediateDirectory)/common_archive.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/sebastien/Documents/dev/ktcl/common/archive.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/common_archive.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/common_archive.cpp$(DependSuffix): common/archive.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/common_archive.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/common_archive.cpp$(DependSuffix) -MM "common/archive.cpp"
+
+$(IntermediateDirectory)/common_archive.cpp$(PreprocessSuffix): common/archive.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/common_archive.cpp$(PreprocessSuffix) "common/archive.cpp"
+
+$(IntermediateDirectory)/common_error_msg.cpp$(ObjectSuffix): common/error_msg.cpp $(IntermediateDirectory)/common_error_msg.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/sebastien/Documents/dev/ktcl/common/error_msg.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/common_error_msg.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/common_error_msg.cpp$(DependSuffix): common/error_msg.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/common_error_msg.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/common_error_msg.cpp$(DependSuffix) -MM "common/error_msg.cpp"
+
+$(IntermediateDirectory)/common_error_msg.cpp$(PreprocessSuffix): common/error_msg.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/common_error_msg.cpp$(PreprocessSuffix) "common/error_msg.cpp"
+
+$(IntermediateDirectory)/common_numconv_stringstream.cpp$(ObjectSuffix): common/numconv_stringstream.cpp $(IntermediateDirectory)/common_numconv_stringstream.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/sebastien/Documents/dev/ktcl/common/numconv_stringstream.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/common_numconv_stringstream.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/common_numconv_stringstream.cpp$(DependSuffix): common/numconv_stringstream.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/common_numconv_stringstream.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/common_numconv_stringstream.cpp$(DependSuffix) -MM "common/numconv_stringstream.cpp"
+
+$(IntermediateDirectory)/common_numconv_stringstream.cpp$(PreprocessSuffix): common/numconv_stringstream.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/common_numconv_stringstream.cpp$(PreprocessSuffix) "common/numconv_stringstream.cpp"
+
+$(IntermediateDirectory)/common_string_ext.cpp$(ObjectSuffix): common/string_ext.cpp $(IntermediateDirectory)/common_string_ext.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/sebastien/Documents/dev/ktcl/common/string_ext.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/common_string_ext.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/common_string_ext.cpp$(DependSuffix): common/string_ext.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/common_string_ext.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/common_string_ext.cpp$(DependSuffix) -MM "common/string_ext.cpp"
+
+$(IntermediateDirectory)/common_string_ext.cpp$(PreprocessSuffix): common/string_ext.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/common_string_ext.cpp$(PreprocessSuffix) "common/string_ext.cpp"
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)

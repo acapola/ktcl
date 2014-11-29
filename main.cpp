@@ -3,6 +3,18 @@
 #include <tcl.h>
 #include <string.h>
 
+
+#include <iostream>
+#include <sstream>
+#include <limits>
+#include <iomanip>
+//#include <algorithm>
+//#include <vector>
+#include <cctype>
+#include <locale>
+using namespace std;
+
+#include "error_msg.h"
 Tcl_Interp * interp ;
 
 #define DEFAULT_PRIMARY_PROMPT	  "ktcl% "
@@ -21,9 +33,11 @@ void prompt(bool newCmd){
 
 int raw_to_text_init(Tcl_Interp *interp);
 
-int main(int argc, char *argv[]) {
+void test(void);
+int main(int argc, char *argv[]) try {
 	int code;
 	printf("ktcl\n");
+	test();
 	Tcl_FindExecutable(argv[0]);
     interp = Tcl_CreateInterp();
 	
@@ -65,4 +79,16 @@ int main(int argc, char *argv[]) {
 	Tcl_DStringFree(&line);
 	Tcl_DStringFree(&cmd);
 	return 0;
+}
+catch(error_msg e)
+{
+	cout <<e.get_err_text()<<endl<<"Error code "<<e.get_err_code()<<endl;
+	system("pause");
+	return e.get_err_code();
+}
+catch(...)
+{
+	cout <<"unknown exception caught !"<<endl;
+	system("pause");
+	return -1;
 }

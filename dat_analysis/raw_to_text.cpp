@@ -1,16 +1,90 @@
  #include <tcl.h>
+#include "tclchannelstreambuf.h"
+#include "error_msg.h"
+#include <sstream>
+#include <stdio.h>
+#include <string.h>
+void dbgPrint(char *p){
+	Tcl_Channel chan;
+	chan = Tcl_GetStdChannel(TCL_STDOUT);
+	if (chan != NULL) {
+		Tcl_WriteChars(chan, p,strlen(p));
+		Tcl_Flush(chan);
+	} else {
+		printf("can't get TCL_STDOUT");
+	}
+}
 
-#define IN_CHAN_IDX 0
-#define OUT_CHAN_IDX 1
-#define MAX_LENGTH_IDX 2
+/*
+proc rawToText { fin fout {maxLength 0} } {
+	fconfigure $fin -translation binary
+	set cnt 0
+	while { 1 } {
+		set bBin [read $fin 1]
+		if {$bBin==""} {break}
+		set bText ""
+		binary scan $bBin b* bText
+		puts -nonewline $fout "[string range $bText 1 7] "
+		incr cnt
+		if {$cnt%4==0} {puts -nonewline $fout "\n"}
+		if {$cnt==$maxLength} {break}
+	}
+}
+*/
+/*
+void test(void) try {
+	throw error_msg("test exception");
+} ERROR_MSG_CATCH("test(void)")
+*/
+typedef unsigned char uint8_t;
+long raw_to_text(std::istream &in, std::ostream &out, long max_length) try {
+	long cnt=0;
+	char b;
+	if(-1==max_length) max_length = LONG_MAX;
+	while((cnt<max_length) && in.get(b)){
+		out.write(&b,1);
+		cnt++;
+	}
+	return cnt;
+} ERROR_MSG_CATCH("raw_to_text(std::istream &in, std::ostream &out, int max_length)")
 
- static int raw_to_text_cmd(ClientData cdata, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]) {
+#include <fstream>
+void test(void){
+	std::ofstream out;
+	out.open ("c:\\tmp\\test.out.txt");
+	std::ifstream in ("c:\\tmp\\test.dat");
+	raw_to_text(in,out,-1);
+	out.close();
+	in.close();
+}
+
+long raw_to_text(Tcl_Interp *interp, Tcl_Channel input_channel,	Tcl_Channel output_channel, long max_length) try {
+	if(TCL_OK!=Tcl_SetChannelOption(interp, input_channel, "-translation", "binary")) {//use the channel in binary mode
+		int errorCode = Tcl_GetErrno();
+		//const char *machineReadableMessage = Tcl_ErrnoId();
+		const char *hummanReadableMessage = Tcl_ErrnoMsg(errorCode);
+		throw error_msg(errorCode,hummanReadableMessage);
+	}
+	tclchannel_istream in(input_channel);
+	tclchannel_ostream out(output_channel);
+	long cnt = raw_to_text(in,out,max_length);
+	out.flush();
+	return cnt;
+} ERROR_MSG_CATCH("raw_to_text(Tcl_Interp *interp, Tcl_Channel input_channel,	Tcl_Channel output_channel, int max_length)")
+
+#define IN_CHAN_IDX 1
+#define OUT_CHAN_IDX 2
+#define MAX_LENGTH_IDX 3
+
+ static int raw_to_text_cmd(ClientData cdata, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[])  try {
 	Tcl_Channel input_channel;
 	Tcl_Channel output_channel;
-	int max_length;
+	long max_length;
 	int mode;
 	
-	if(objc!=3) goto wrongArgs;
+	if(objc!=4) {
+		throw error_msg("wrong # args: should be:\n   file_in file_out ?max_length?");
+	}
 	input_channel = Tcl_GetChannel(interp, Tcl_GetString(objv[IN_CHAN_IDX]), &mode);
 	if (input_channel == (Tcl_Channel) NULL) {
 		return TCL_ERROR;
@@ -31,21 +105,22 @@
 		return TCL_ERROR;
 	}
 	
-	if (Tcl_GetIntFromObj(interp, objv[MAX_LENGTH_IDX], &max_length) != TCL_OK) {
+	if (Tcl_GetLongFromObj(interp, objv[MAX_LENGTH_IDX], &max_length) != TCL_OK) {
 		return TCL_ERROR;
 	}
-
-	Tcl_SetObjResult(interp, Tcl_NewStringObj("Hello, World!", -1));
+	unsigned int cnt = raw_to_text(interp,input_channel,output_channel,max_length);
+	Tcl_SetObjResult(interp, Tcl_NewLongObj(cnt));
+	//Tcl_SetObjResult(interp, Tcl_NewStringObj("Hello, World!", -1));
 	return TCL_OK;
-
-wrongArgs:
-    Tcl_AppendResult (interp, "wrong # args: should be:\n",
-	    "  ",
-	    Tcl_GetString(objv[0]),
-	    " file_in file_out ?max_length?",
-	    (char *) NULL);
-    return TCL_ERROR;
- }
+} catch(error_msg e){
+	std::stringstream msg;
+	msg<<e.get_err_text()<<std::endl<<"Error code "<<e.get_err_code()<<std::endl;
+	Tcl_AppendResult (interp, "\nERROR: ",Tcl_GetString(objv[0]), msg.str().c_str(), (char *) NULL);
+	return TCL_ERROR;
+} catch(...){
+	Tcl_AppendResult (interp, "\nERROR: ",Tcl_GetString(objv[0]), "unknown exception caught !", (char *) NULL);
+	return TCL_ERROR;
+}
 
 int /*DLLEXPORT*/ raw_to_text_init(Tcl_Interp *interp) {
         Tcl_Namespace *nsPtr; /* pointer to hold our own new namespace */
