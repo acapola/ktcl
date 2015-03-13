@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=sebastien
-Date                   :=11/29/14
+Date                   :=11/30/14
 CodeLitePath           :="C:\Program Files (x86)\CodeLite"
 LinkerName             :=C:/MinGW-4.8.1/bin/g++.exe 
 SharedObjectLinkerName :=C:/MinGW-4.8.1/bin/g++.exe -shared -fPIC
@@ -66,7 +66,7 @@ UNIT_TEST_PP_SRC_DIR:=C:\UnitTest++-1.3
 TCL_ROOT:=c:/tcl32
 TCL_LIB:=tcl86
 LINKER_OPT:=-static
-Objects0=$(IntermediateDirectory)/main.cpp$(ObjectSuffix) $(IntermediateDirectory)/dat_analysis_raw_to_text.cpp$(ObjectSuffix) $(IntermediateDirectory)/tclchannelstreambuf.cpp$(ObjectSuffix) $(IntermediateDirectory)/common_archive.cpp$(ObjectSuffix) $(IntermediateDirectory)/common_error_msg.cpp$(ObjectSuffix) $(IntermediateDirectory)/common_numconv_stringstream.cpp$(ObjectSuffix) $(IntermediateDirectory)/common_string_ext.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/main.cpp$(ObjectSuffix) $(IntermediateDirectory)/dat_analysis_raw_to_text.cpp$(ObjectSuffix) $(IntermediateDirectory)/tclchannelstreambuf.cpp$(ObjectSuffix) $(IntermediateDirectory)/common_archive.cpp$(ObjectSuffix) $(IntermediateDirectory)/common_error_msg.cpp$(ObjectSuffix) $(IntermediateDirectory)/common_numconv_stringstream.cpp$(ObjectSuffix) $(IntermediateDirectory)/common_string_ext.cpp$(ObjectSuffix) $(IntermediateDirectory)/dat_analysis.cpp$(ObjectSuffix) 
 
 
 
@@ -148,6 +148,14 @@ $(IntermediateDirectory)/common_string_ext.cpp$(DependSuffix): common/string_ext
 
 $(IntermediateDirectory)/common_string_ext.cpp$(PreprocessSuffix): common/string_ext.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/common_string_ext.cpp$(PreprocessSuffix) "common/string_ext.cpp"
+
+$(IntermediateDirectory)/dat_analysis.cpp$(ObjectSuffix): dat_analysis.cpp $(IntermediateDirectory)/dat_analysis.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/sebastien/Documents/dev/ktcl/dat_analysis.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/dat_analysis.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/dat_analysis.cpp$(DependSuffix): dat_analysis.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/dat_analysis.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/dat_analysis.cpp$(DependSuffix) -MM "dat_analysis.cpp"
+
+$(IntermediateDirectory)/dat_analysis.cpp$(PreprocessSuffix): dat_analysis.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/dat_analysis.cpp$(PreprocessSuffix) "dat_analysis.cpp"
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)

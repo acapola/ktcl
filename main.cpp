@@ -31,17 +31,34 @@ void prompt(bool newCmd){
 	}
 }
 
-int raw_to_text_init(Tcl_Interp *interp);
+void evalCommand(Tcl_Interp *interp, const char *cmdStr){
+	int code = Tcl_Eval(interp, cmdStr);
+	if (code == TCL_OK) {
+		Tcl_Channel chan = Tcl_GetStdChannel(TCL_STDOUT);
+		if (chan) {
+			Tcl_WriteObj(chan, Tcl_GetObjResult(interp));
+			Tcl_WriteChars(chan, "\n", 1);
+		}
+	} else {
+		Tcl_Channel chan = Tcl_GetStdChannel(TCL_STDERR);
+		if (chan) {
+			Tcl_WriteObj(chan, Tcl_GetObjResult(interp));
+			Tcl_WriteChars(chan, "\n", 1);
+		}
+	}
+}
+
+int dat_analysis_init(Tcl_Interp *interp);
 
 void test(void);
 int main(int argc, char *argv[]) try {
-	int code;
 	printf("ktcl\n");
-	test();
 	Tcl_FindExecutable(argv[0]);
     interp = Tcl_CreateInterp();
 	
-	raw_to_text_init(interp);
+	dat_analysis_init(interp);
+	//test();
+	evalCommand(interp,"source ../test.tcl");
 	
 	Tcl_Channel chanIn = Tcl_GetStdChannel(TCL_STDIN);
 	Tcl_DString cmd;
@@ -56,20 +73,7 @@ int main(int argc, char *argv[]) try {
 		const char *cmdStr = Tcl_DStringValue(&cmd);
 		newCmd = Tcl_CommandComplete(cmdStr);
 		if(newCmd){
-			code = Tcl_Eval(interp, cmdStr);
-			if (code == TCL_OK) {
-				Tcl_Channel chan = Tcl_GetStdChannel(TCL_STDOUT);
-				if (chan) {
-					Tcl_WriteObj(chan, Tcl_GetObjResult(interp));
-					Tcl_WriteChars(chan, "\n", 1);
-				}
-			} else {
-				Tcl_Channel chan = Tcl_GetStdChannel(TCL_STDERR);
-				if (chan) {
-					Tcl_WriteObj(chan, Tcl_GetObjResult(interp));
-					Tcl_WriteChars(chan, "\n", 1);
-				}
-			}
+			evalCommand(interp,cmdStr);
 			Tcl_DStringTrunc(&cmd, 0);
 		} else {
 			//printf("command incomplete: %s\n",cmdStr);
@@ -83,12 +87,12 @@ int main(int argc, char *argv[]) try {
 catch(error_msg e)
 {
 	cout <<e.get_err_text()<<endl<<"Error code "<<e.get_err_code()<<endl;
-	system("pause");
+	getchar();
 	return e.get_err_code();
 }
 catch(...)
 {
 	cout <<"unknown exception caught !"<<endl;
-	system("pause");
+	getchar();
 	return -1;
 }
