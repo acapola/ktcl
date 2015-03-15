@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <string.h>
 
-//typedef unsigned char uint8_t;
 long raw_to_text(std::istream &in, std::ostream &out, long max_length) try {
 	long cnt=0;
 	char b;
@@ -19,16 +18,6 @@ long raw_to_text(std::istream &in, std::ostream &out, long max_length) try {
 	}
 	return cnt;
 } ERROR_MSG_CATCH("raw_to_text(std::istream &in, std::ostream &out, int max_length)")
-/*
-#include <fstream>
-void test(void){
-	std::ofstream out;
-	out.open ("c:\\tmp\\test.out.txt");
-	std::ifstream in ("c:\\tmp\\test.dat");
-	raw_to_text(in,out,-1);
-	out.close();
-	in.close();
-}*/
 
 long raw_to_text(Tcl_Interp *interp, Tcl_Channel input_channel,	Tcl_Channel output_channel, long max_length) try {
 	if(TCL_OK!=Tcl_SetChannelOption(interp, input_channel, "-translation", "binary")) {//use the channel in binary mode

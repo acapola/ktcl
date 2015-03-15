@@ -60,6 +60,7 @@
     <File Name="common/string_ext.cpp"/>
     <File Name="common/string_ext.h"/>
     <File Name="dat_analysis.cpp"/>
+    <File Name="dat_analysis/transpose.cpp"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>
