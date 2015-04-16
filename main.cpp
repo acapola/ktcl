@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) try {
 	
 	dat_analysis_init(interp);
 	//test();
-	evalCommand(interp,"source ../test.tcl");
+	//evalCommand(interp,"source ../test.tcl");
 	
 	Tcl_Channel chanIn = Tcl_GetStdChannel(TCL_STDIN);
 	Tcl_DString cmd;

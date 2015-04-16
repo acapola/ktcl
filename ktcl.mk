@@ -2,18 +2,18 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Debug
+## Release
 ProjectName            :=ktcl
-ConfigurationName      :=Debug
+ConfigurationName      :=Release
 WorkspacePath          := "F:\work\ktcl\ktcl_windows"
 ProjectPath            := "F:\work\ktcl"
-IntermediateDirectory  :=./Debug
+IntermediateDirectory  :=./Release
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=seb
-Date                   :=03/15/15
+Date                   :=04/17/15
 CodeLitePath           :="C:\Program Files (x86)\CodeLite"
 LinkerName             :=C:/MinGW-4.8.1/bin/g++.exe 
 SharedObjectLinkerName :=C:/MinGW-4.8.1/bin/g++.exe -shared -fPIC
@@ -28,7 +28,7 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/$(ProjectName)
-Preprocessors          :=$(PreprocessorSwitch)HAVE_UNISTD_H 
+Preprocessors          :=$(PreprocessorSwitch)NDEBUG $(PreprocessorSwitch)HAVE_UNISTD_H 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
@@ -52,8 +52,8 @@ LibPath                := $(LibraryPathSwitch). $(LibraryPathSwitch)$(TCL_ROOT)/
 AR       := C:/MinGW-4.8.1/bin/ar.exe rcu
 CXX      := C:/MinGW-4.8.1/bin/g++.exe 
 CC       := C:/MinGW-4.8.1/bin/gcc.exe 
-CXXFLAGS :=  -Wmain -Wfatal-errors -g -O0 -std=c++11 -Wall $(Preprocessors)
-CFLAGS   :=  -g -O0 -Wall $(Preprocessors)
+CXXFLAGS :=  -O3 -fexpensive-optimizations -std=c++11 -Wall $(Preprocessors)
+CFLAGS   :=  -O3 -std=c++11 -Wall $(Preprocessors)
 ASFLAGS  := 
 AS       := C:/MinGW-4.8.1/bin/as.exe 
 
@@ -85,7 +85,7 @@ $(OutputFile): $(IntermediateDirectory)/.d $(Objects)
 	$(LinkerName) $(OutputSwitch)$(OutputFile) @$(ObjectsFileList) $(LibPath) $(Libs) $(LinkOptions)
 
 $(IntermediateDirectory)/.d:
-	@$(MakeDirCommand) "./Debug"
+	@$(MakeDirCommand) "./Release"
 
 PreBuild:
 
@@ -171,10 +171,6 @@ $(IntermediateDirectory)/dat_analysis_transpose.cpp$(PreprocessSuffix): dat_anal
 ## Clean
 ##
 clean:
-	$(RM) ./Debug/*$(ObjectSuffix)
-	$(RM) ./Debug/*$(DependSuffix)
-	$(RM) $(OutputFile)
-	$(RM) $(OutputFile).exe
-	$(RM) "ktcl_windows/.build-debug/ktcl"
+	$(RM) -r ./Release/
 
 
