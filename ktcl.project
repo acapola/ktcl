@@ -47,20 +47,25 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="main.cpp"/>
-    <File Name="dat_analysis/raw_to_text.cpp"/>
-    <File Name="tclchannelstreambuf.h"/>
-    <File Name="tclchannelstreambuf.cpp"/>
-    <File Name="common/archive.cpp"/>
-    <File Name="common/archive.h"/>
-    <File Name="common/error_msg.cpp"/>
-    <File Name="common/error_msg.h"/>
-    <File Name="common/numconv_stringstream.cpp"/>
-    <File Name="common/numconv_stringstream.h"/>
-    <File Name="common/string_ext.cpp"/>
-    <File Name="common/string_ext.h"/>
-    <File Name="dat_analysis.cpp"/>
-    <File Name="dat_analysis/transpose.cpp"/>
+    <VirtualDirectory Name="base">
+      <File Name="common/archive.cpp"/>
+      <File Name="common/archive.h"/>
+      <File Name="common/error_msg.cpp"/>
+      <File Name="common/error_msg.h"/>
+      <File Name="main.cpp"/>
+      <File Name="common/numconv_stringstream.cpp"/>
+      <File Name="common/numconv_stringstream.h"/>
+      <File Name="common/string_ext.cpp"/>
+      <File Name="common/string_ext.h"/>
+      <File Name="tclchannelstreambuf.cpp"/>
+      <File Name="tclchannelstreambuf.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="dat_analysis">
+      <File Name="dat_analysis.cpp"/>
+      <File Name="dat_analysis/entropy.cpp"/>
+      <File Name="dat_analysis/raw_to_text.cpp"/>
+      <File Name="dat_analysis/transpose.cpp"/>
+    </VirtualDirectory>
   </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>
@@ -77,6 +82,7 @@
         <IncludePath Value="."/>
         <IncludePath Value="$(TCL_ROOT)/include"/>
         <IncludePath Value="common"/>
+        <IncludePath Value="$(BOOST)"/>
         <Preprocessor Value="HAVE_UNISTD_H"/>
       </Compiler>
       <Linker Options="$(LINKER_OPT)" Required="yes">
@@ -121,6 +127,7 @@
         <IncludePath Value="."/>
         <IncludePath Value="$(TCL_ROOT)/include"/>
         <IncludePath Value="common"/>
+        <IncludePath Value="$(BOOST)"/>
         <Preprocessor Value="NDEBUG"/>
         <Preprocessor Value="HAVE_UNISTD_H"/>
       </Compiler>

@@ -123,7 +123,7 @@ long transpose(Tcl_Interp *interp, std::string in_file_name, std::string out_fil
 	long total_length=-1;
 	long block_length=-1;
 	int chunk_width_in_bits=0;
-	int mode;
+	//int mode;
 	if((objc<5)&&(objc>6)) {
 		throw error_msg("wrong # args: should be:\n   file_in file_out total_length block_length [chunk_width_in_bits]");
 	}
