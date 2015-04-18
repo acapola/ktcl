@@ -76,6 +76,19 @@ long entropy(std::ifstream &in, long total_length, unsigned int block_width_in_b
 	return cnt;
 } ERROR_MSG_CATCH("transpose_chunks(std::ifstream &in, std::ofstream &out, long total_length, long block_length, unsigned int chunk_width_in_bits)")
 
+long entropy(std::string in_file_name,	long total_length, unsigned int block_length_in_bits, unsigned int chunk_width_in_bits,
+		double *min_entropy, 
+		double *shannon_entropy,
+		unsigned int *min_value,
+		unsigned int *max_value
+	) try {
+	std::ifstream is (in_file_name, std::ifstream::binary);
+	long cnt = entropy(is,total_length, block_length_in_bits, chunk_width_in_bits, 
+		min_entropy, shannon_entropy,min_value,max_value);
+	is.close();
+	return cnt;
+} ERROR_MSG_CATCH("raw_to_text(Tcl_Interp *interp, Tcl_Channel input_channel,	Tcl_Channel output_channel, int max_length)")
+
 long entropy(Tcl_Interp *interp, Tcl_Channel input_channel,	long total_length, unsigned int block_length_in_bits, unsigned int chunk_width_in_bits,
 		double *min_entropy, 
 		double *shannon_entropy,
@@ -120,8 +133,8 @@ long entropy(Tcl_Interp *interp, Tcl_Channel input_channel,	long total_length, u
 			throw error_msg(msg.str());
 		}
 	} else {
-		input_channel = Tcl_OpenFileChannel(interp, in_file_name.c_str(), "RDONLY", 0);
-		if (input_channel == (Tcl_Channel) NULL) throw error_msg("input_channel is null");
+		//input_channel = Tcl_OpenFileChannel(interp, in_file_name.c_str(), "RDONLY", 0);
+		//if (input_channel == (Tcl_Channel) NULL) throw error_msg("input_channel is null");
 	}
 	
 	if (Tcl_GetLongFromObj(interp, objv[TOTAL_LENGTH_IDX], &total_length) != TCL_OK) {
@@ -148,8 +161,13 @@ long entropy(Tcl_Interp *interp, Tcl_Channel input_channel,	long total_length, u
 	double *shannon_entropy = new double[nchunks];
 	unsigned int *min_value = new unsigned int[nchunks];
 	unsigned int *max_value = new unsigned int[nchunks];
-	entropy(interp,input_channel,total_length,(unsigned int)block_width_in_bits,(unsigned int)chunk_width_in_bits,
+	if(in_file_is_channel){
+		entropy(interp,input_channel,total_length,(unsigned int)block_width_in_bits,(unsigned int)chunk_width_in_bits,
 			min_entropy, shannon_entropy,min_value,max_value);
+	}else{
+		entropy(in_file_name,total_length,(unsigned int)block_width_in_bits,(unsigned int)chunk_width_in_bits,
+			min_entropy, shannon_entropy,min_value,max_value);
+	}
 	Tcl_Obj *min_entropy_list=Tcl_NewListObj(0, 0);
 	Tcl_Obj *shannon_entropy_list=Tcl_NewListObj(0, 0);
 	Tcl_Obj *min_value_list=Tcl_NewListObj(0, 0);
@@ -236,6 +254,7 @@ int entropy_cmd(ClientData cdata, Tcl_Interp *interp, int objc, Tcl_Obj *const o
 	return entropy_cmd_core(cdata,interp,objc,objv,false);//input file passed by file name
 }
 
-int entropy_chan_cmd(ClientData cdata, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]) {
+/*int entropy_chan_cmd(ClientData cdata, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]) {
 	return entropy_cmd_core(cdata,interp,objc,objv,true);//input file passed by channel
 }
+*/

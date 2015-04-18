@@ -157,6 +157,7 @@ long split(Tcl_Interp *interp, Tcl_Channel input_channel, long start_offset, lon
 long split(std::string in_file_name, long start_offset, long total_length, unsigned int block_width_in_bits, unsigned int chunk_width_in_bits, std::vector<std::string> out_names) try {
 	std::ifstream is (in_file_name, std::ifstream::binary);
 	long cnt = split(is,start_offset,total_length, block_width_in_bits, chunk_width_in_bits,out_names);
+	is.close();
 	return cnt;
 } ERROR_MSG_CATCH("raw_to_text(Tcl_Interp *interp, Tcl_Channel input_channel,	Tcl_Channel output_channel, int max_length)")
 
