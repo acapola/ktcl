@@ -29,15 +29,26 @@ long entropy(std::ifstream &in, long total_length, unsigned int block_width_in_b
 			symbols_cnt[chunk_index][symbol_index]=0;
 		}
 	}
+	long chunk_max_val = (1L<<chunk_width_in_bits)-1;
 	for(int chunk=0;chunk<nchunks;chunk++){
-		min_value[chunk]=(1L<<chunk_width_in_bits)-1;
+		min_value[chunk]=chunk_max_val;
 		max_value[chunk]=0;
 	}
 	long nblocks = (total_length*8) / block_width_in_bits;
 	for(long block=0;block<nblocks;block++){
+		unsigned int chunk_val=0;
+		unsigned long out_buf=0;
+		unsigned int output_level=0;
 		for(int chunk=0;chunk<nchunks;chunk++) {
-			in.get(b);
-			unsigned int chunk_val = 0x0FF & b;
+			while(output_level<chunk_width_in_bits){
+				in.get(b);
+				unsigned char new_bits = 0x0FF & b;
+				out_buf = out_buf | (new_bits<<output_level);
+				output_level+=8;
+			}
+			output_level-=chunk_width_in_bits;
+			chunk_val = out_buf & chunk_max_val;
+			out_buf = out_buf >> chunk_width_in_bits;
 			if(chunk_val<min_value[chunk]) min_value[chunk] = chunk_val;
 			if(chunk_val>max_value[chunk]) max_value[chunk] = chunk_val;
 			array2d_unint_index_t chunk_index = chunk;
@@ -88,9 +99,8 @@ long entropy(Tcl_Interp *interp, Tcl_Channel input_channel,	long total_length, u
 #define BLOCK_WIDTH_IDX 3
 #define CHUNK_WIDTH_IDX 4
 
- int entropy_cmd(ClientData cdata, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[])  try {
+ int entropy_cmd_core(ClientData cdata, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[], bool in_file_is_channel)  try {
 	std::string in_file_name;
-	std::string out_file_name;
 	long total_length=-1;
 	int block_width_in_bits=0;
 	int chunk_width_in_bits=0;
@@ -100,12 +110,18 @@ long entropy(Tcl_Interp *interp, Tcl_Channel input_channel,	long total_length, u
 	}
 	in_file_name = Tcl_GetString(objv[IN_CHAN_IDX]);
 	//check the file system
-	Tcl_Channel input_channel = Tcl_GetChannel(interp, in_file_name.c_str(), &mode);
-	if (input_channel == (Tcl_Channel) NULL) throw error_msg("input_channel is null");
-	if ((mode & TCL_READABLE) == 0) {
-		std::stringstream msg;
-		msg << "file \""<< in_file_name<<"\" cannot be opened for reading";
-		throw error_msg(msg.str());
+	Tcl_Channel input_channel;
+	if(in_file_is_channel){
+		input_channel = Tcl_GetChannel(interp, in_file_name.c_str(), &mode);
+		if (input_channel == (Tcl_Channel) NULL) throw error_msg("input_channel is null");
+		if ((mode & TCL_READABLE) == 0) {
+			std::stringstream msg;
+			msg << "file \""<< in_file_name<<"\" cannot be opened for reading";
+			throw error_msg(msg.str());
+		}
+	} else {
+		input_channel = Tcl_OpenFileChannel(interp, in_file_name.c_str(), "RDONLY", 0);
+		if (input_channel == (Tcl_Channel) NULL) throw error_msg("input_channel is null");
 	}
 	
 	if (Tcl_GetLongFromObj(interp, objv[TOTAL_LENGTH_IDX], &total_length) != TCL_OK) {
@@ -132,10 +148,8 @@ long entropy(Tcl_Interp *interp, Tcl_Channel input_channel,	long total_length, u
 	double *shannon_entropy = new double[nchunks];
 	unsigned int *min_value = new unsigned int[nchunks];
 	unsigned int *max_value = new unsigned int[nchunks];
-	//for(int i=0;i<nchunks;i++) entropy[i] = i;
 	entropy(interp,input_channel,total_length,(unsigned int)block_width_in_bits,(unsigned int)chunk_width_in_bits,
 			min_entropy, shannon_entropy,min_value,max_value);
-	//printf("nchunks=%d\n",nchunks);
 	Tcl_Obj *min_entropy_list=Tcl_NewListObj(0, 0);
 	Tcl_Obj *shannon_entropy_list=Tcl_NewListObj(0, 0);
 	Tcl_Obj *min_value_list=Tcl_NewListObj(0, 0);
@@ -216,4 +230,12 @@ long entropy(Tcl_Interp *interp, Tcl_Channel input_channel,	long total_length, u
 } catch(...){
 	Tcl_AppendResult (interp, "\nERROR: ",Tcl_GetString(objv[0]), "unknown exception caught !", (char *) NULL);
 	return TCL_ERROR;
+}
+
+int entropy_cmd(ClientData cdata, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]) {
+	return entropy_cmd_core(cdata,interp,objc,objv,false);//input file passed by file name
+}
+
+int entropy_chan_cmd(ClientData cdata, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]) {
+	return entropy_cmd_core(cdata,interp,objc,objv,true);//input file passed by channel
 }

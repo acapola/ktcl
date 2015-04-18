@@ -52,7 +52,6 @@
       <File Name="common/archive.h"/>
       <File Name="common/error_msg.cpp"/>
       <File Name="common/error_msg.h"/>
-      <File Name="main.cpp"/>
       <File Name="common/numconv_stringstream.cpp"/>
       <File Name="common/numconv_stringstream.h"/>
       <File Name="common/string_ext.cpp"/>
@@ -65,7 +64,9 @@
       <File Name="dat_analysis/entropy.cpp"/>
       <File Name="dat_analysis/raw_to_text.cpp"/>
       <File Name="dat_analysis/transpose.cpp"/>
+      <File Name="dat_analysis/split.cpp"/>
     </VirtualDirectory>
+    <File Name="main.cpp"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>

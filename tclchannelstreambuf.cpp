@@ -79,9 +79,10 @@ std::streambuf::int_type TclChannelStreambuf::underflow()
 	//int Tcl_ReadRaw(channel, readBuf, bytesToRead)
 	int bytesToRead = buffer_.size() - (start - base);
 	size_t n = Tcl_ReadRaw(fptr_, start, bytesToRead);
-	if (n == 0)
+	//if (n == 0)
+    //    return traits_type::eof();
+	if (n != bytesToRead)
         return traits_type::eof();
-
     // Set buffer pointers
     setg(base, start, start + n);
 
