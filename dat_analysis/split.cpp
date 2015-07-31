@@ -2,6 +2,7 @@
 #include "tclchannelstreambuf.h"
 #include "error_msg.h"
 #include <sstream>
+#include <iomanip>
 #include <bitset>
 #include <stdio.h>
 #include <string.h>
@@ -175,6 +176,9 @@ long split(std::string in_file_name, long start_offset, long total_length, unsig
 	int block_width_in_bits=0;
 	int chunk_width_in_bits=0;
 	int mode;
+	if((objc<4)&&(objc>6)) {
+		throw error_msg("wrong # args: should be:\n   file_in total_length block_width_in_bits [chunk_width_in_bits] [files_out]");
+	}
 	in_file_name = Tcl_GetString(objv[IN_CHAN_IDX]);
 	//check the file system
 	Tcl_Channel input_channel;
@@ -206,32 +210,43 @@ long split(std::string in_file_name, long start_offset, long total_length, unsig
 		msg << "cannot convert \""<< Tcl_GetString(objv[BLOCK_WIDTH_IDX])<<"\" to integer value";
 		throw error_msg(msg.str());
 	}
-	if (Tcl_GetIntFromObj(interp, objv[CHUNK_WIDTH_IDX], &chunk_width_in_bits) != TCL_OK) {
-		std::stringstream msg;
-		msg << "cannot convert \""<< Tcl_GetString(objv[CHUNK_WIDTH_IDX])<<"\" to integer value";
-		throw error_msg(msg.str());
+	if (objc>CHUNK_WIDTH_IDX){
+		if (Tcl_GetIntFromObj(interp, objv[CHUNK_WIDTH_IDX], &chunk_width_in_bits) != TCL_OK) {
+			std::stringstream msg;
+			msg << "cannot convert \""<< Tcl_GetString(objv[CHUNK_WIDTH_IDX])<<"\" to integer value";
+			throw error_msg(msg.str());
+		}
+	} else {
+		chunk_width_in_bits = block_width_in_bits;
 	}
-	/*if (Tcl_GetListFromObj(interp, objv[OUT_NAMES_IDX], &out_names_list) != TCL_OK) {
-		std::stringstream msg;
-		msg << "cannot convert \""<< Tcl_GetString(objv[OUT_NAMES_IDX])<<"\" to integer value";
-		throw error_msg(msg.str());
-	}*/
-	Tcl_Obj *out_names_list = objv[OUT_NAMES_IDX];
-	Tcl_Obj **listObjv;
-	int list_length;
-	if (Tcl_ListObjGetElements (interp, out_names_list, &list_length, &listObjv) != TCL_OK) {
-        std::stringstream msg;
-		msg << "cannot get elements from list \""<< Tcl_GetString(objv[OUT_NAMES_IDX])<<"\"";
-		throw error_msg(msg.str());
-    }
-	/*if (Tcl_ListObjLength(interp,out_names_list,&list_length) != TCL_OK) {
-		std::stringstream msg;
-		msg << "cannot get the length of \""<< Tcl_GetString(objv[OUT_NAMES_IDX])<<"\"";
-		throw error_msg(msg.str());
-	}*/
-	std::vector<std::string> out_names(list_length);
-	for(unsigned int i=0;i<list_length;i++){
-		out_names[i] = Tcl_GetString(listObjv[i]);
+	int nchunks = block_width_in_bits/chunk_width_in_bits;
+	std::vector<std::string> out_names(nchunks);
+	Tcl_Obj *out_names_list;
+	if (objc>OUT_NAMES_IDX){ 
+		out_names_list = objv[OUT_NAMES_IDX];
+		Tcl_Obj **listObjv;
+		int list_length;
+		if (Tcl_ListObjGetElements (interp, out_names_list, &list_length, &listObjv) != TCL_OK) {
+			std::stringstream msg;
+			msg << "cannot get elements from list \""<< Tcl_GetString(objv[OUT_NAMES_IDX])<<"\"";
+			throw error_msg(msg.str());
+		}
+		for(unsigned int i=0;i<list_length;i++){
+			out_names[i] = Tcl_GetString(listObjv[i]);
+		}
+	} else {
+		out_names_list = Tcl_NewListObj(0, 0);
+		for(unsigned int i=0;i<nchunks;i++){
+			std::stringstream filename;
+			filename << in_file_name << ".split" << std::setfill('0') << std::setw(4) << i << ".dat";
+			out_names[i] = filename.str();
+			Tcl_Obj *valuePtr = Tcl_NewStringObj(out_names[i].c_str(), out_names[i].length());
+			if (Tcl_ListObjAppendElement(interp, out_names_list, valuePtr) != TCL_OK){
+				std::stringstream msg;
+				msg << "Tcl_ListObjAppendElement error in out_names_list";
+				throw error_msg(msg.str());
+			}
+		}
 	}
 	long cnt;
 	if(in_file_is_channel){
@@ -239,7 +254,7 @@ long split(std::string in_file_name, long start_offset, long total_length, unsig
 	} else {
 		cnt=split(in_file_name,start_offset,total_length,(unsigned int)block_width_in_bits,(unsigned int)chunk_width_in_bits,out_names);
 	}
-	Tcl_SetObjResult(interp, Tcl_NewLongObj(cnt));
+	Tcl_SetObjResult(interp, out_names_list);
 	return TCL_OK;
 } catch(error_msg e){
 	std::stringstream msg;

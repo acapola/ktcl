@@ -14,7 +14,8 @@ long entropy(std::ifstream &in, long total_length, unsigned int block_width_in_b
 		double *min_entropy, 
 		double *shannon_entropy,
 		unsigned int *min_value,
-		unsigned int *max_value
+		unsigned int *max_value,
+		double *frequency_test_entropy
 	) try {
 	long cnt=0;
 	char b;
@@ -71,6 +72,11 @@ long entropy(std::ifstream &in, long total_length, unsigned int block_width_in_b
 		double pmax = ((double)max)/nblocks;
 		min_entropy[chunk] = -log2(pmax);
 		shannon_entropy[chunk] = -sumpx;
+		//NIST's "frequency statistic of min-entropy" sp800-90b 9.3.7.3
+		double alpha = .95;//95% confidence
+		double N = nblocks;
+		double e = sqrt(log(1/(1-alpha))/(2*N));
+		frequency_test_entropy[chunk] = -log2(pmax+e);
 	}
 	
 	return cnt;
@@ -80,11 +86,12 @@ long entropy(std::string in_file_name,	long total_length, unsigned int block_len
 		double *min_entropy, 
 		double *shannon_entropy,
 		unsigned int *min_value,
-		unsigned int *max_value
+		unsigned int *max_value,
+		double *frequency_test_entropy
 	) try {
 	std::ifstream is (in_file_name, std::ifstream::binary);
 	long cnt = entropy(is,total_length, block_length_in_bits, chunk_width_in_bits, 
-		min_entropy, shannon_entropy,min_value,max_value);
+		min_entropy, shannon_entropy,min_value,max_value,frequency_test_entropy);
 	is.close();
 	return cnt;
 } ERROR_MSG_CATCH("raw_to_text(Tcl_Interp *interp, Tcl_Channel input_channel,	Tcl_Channel output_channel, int max_length)")
@@ -93,7 +100,8 @@ long entropy(Tcl_Interp *interp, Tcl_Channel input_channel,	long total_length, u
 		double *min_entropy, 
 		double *shannon_entropy,
 		unsigned int *min_value,
-		unsigned int *max_value
+		unsigned int *max_value,
+		double *frequency_test_entropy
 	) try {
 	if(TCL_OK!=Tcl_SetChannelOption(interp, input_channel, "-translation", "binary")) {//use the channel in binary mode
 		int errorCode = Tcl_GetErrno();
@@ -103,7 +111,7 @@ long entropy(Tcl_Interp *interp, Tcl_Channel input_channel,	long total_length, u
 	}
 	tclchannel_istream in(input_channel);
 	long cnt = entropy((std::ifstream&)in,total_length, block_length_in_bits, chunk_width_in_bits, 
-		min_entropy, shannon_entropy,min_value,max_value);
+		min_entropy, shannon_entropy,min_value,max_value,frequency_test_entropy);
 	return cnt;
 } ERROR_MSG_CATCH("raw_to_text(Tcl_Interp *interp, Tcl_Channel input_channel,	Tcl_Channel output_channel, int max_length)")
 
@@ -161,17 +169,19 @@ long entropy(Tcl_Interp *interp, Tcl_Channel input_channel,	long total_length, u
 	double *shannon_entropy = new double[nchunks];
 	unsigned int *min_value = new unsigned int[nchunks];
 	unsigned int *max_value = new unsigned int[nchunks];
+	double *frequency_test_entropy = new double[nchunks];
 	if(in_file_is_channel){
 		entropy(interp,input_channel,total_length,(unsigned int)block_width_in_bits,(unsigned int)chunk_width_in_bits,
-			min_entropy, shannon_entropy,min_value,max_value);
+			min_entropy, shannon_entropy,min_value,max_value,frequency_test_entropy);
 	}else{
 		entropy(in_file_name,total_length,(unsigned int)block_width_in_bits,(unsigned int)chunk_width_in_bits,
-			min_entropy, shannon_entropy,min_value,max_value);
+			min_entropy, shannon_entropy,min_value,max_value,frequency_test_entropy);
 	}
 	Tcl_Obj *min_entropy_list=Tcl_NewListObj(0, 0);
 	Tcl_Obj *shannon_entropy_list=Tcl_NewListObj(0, 0);
 	Tcl_Obj *min_value_list=Tcl_NewListObj(0, 0);
 	Tcl_Obj *max_value_list=Tcl_NewListObj(0, 0);
+	Tcl_Obj *frequency_test_entropy_list=Tcl_NewListObj(0, 0);
 	Tcl_Obj *keyPtr;
 	Tcl_Obj *valuePtr;
 	for(int i=0;i<nchunks;i++) {
@@ -199,11 +209,18 @@ long entropy(Tcl_Interp *interp, Tcl_Channel input_channel,	long total_length, u
 			msg << "Tcl_ListObjAppendElement error in max_value_list";
 			throw error_msg(msg.str());
 		}
+		valuePtr = Tcl_NewDoubleObj(frequency_test_entropy[i]);
+		if (Tcl_ListObjAppendElement(interp, frequency_test_entropy_list, valuePtr) != TCL_OK){
+			std::stringstream msg;
+			msg << "Tcl_ListObjAppendElement error in frequency_test_entropy_list";
+			throw error_msg(msg.str());
+		}
 	}
 	delete min_entropy;
 	delete shannon_entropy;
 	delete min_value;
 	delete max_value;
+	delete frequency_test_entropy;
 	std::string str = "min_entropy";
 	keyPtr = Tcl_NewStringObj(str.c_str(), str.length());
 	valuePtr=min_entropy_list;
@@ -235,6 +252,14 @@ long entropy(Tcl_Interp *interp, Tcl_Channel input_channel,	long total_length, u
 	if (Tcl_DictObjPut(interp, result, keyPtr, valuePtr) != TCL_OK){
 		std::stringstream msg;
 		msg << "Tcl_DictObjPut error (result,max_value_list)";
+		throw error_msg(msg.str());
+	}
+	str = "frequency_test_entropy";
+	keyPtr = Tcl_NewStringObj(str.c_str(), str.length());
+	valuePtr=frequency_test_entropy_list;
+	if (Tcl_DictObjPut(interp, result, keyPtr, valuePtr) != TCL_OK){
+		std::stringstream msg;
+		msg << "Tcl_DictObjPut error (result,frequency_test_entropy_list)";
 		throw error_msg(msg.str());
 	}
 	
